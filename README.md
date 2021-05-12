@@ -1,4 +1,4 @@
-Salt's administration interface
+Salt's administration interface.
 Used to add users, install extensions, etc.
 
 ### Setup
