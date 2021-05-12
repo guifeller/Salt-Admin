@@ -1,0 +1,16 @@
+{
+  "name": "salt-admin",
+  "version": "1.0.0",
+  "description": "Salt's administration interface",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Guillaume Feller-Mary",
+  "license": "GPLV3",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "electron": "^12.0.1"
+  }
+}

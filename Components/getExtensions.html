@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Extension List</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper red">
+          <div class="col s12">
+            <a href="./menu.html" class="breadcrumb">Main Screen</a>
+            <a href="#!" class="breadcrumb">Extension List</a>
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="table">
+                <table class="stripped centered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Command</th>
+                            <th>Parameter(s)</th>
+                            <th>Option(s)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cont">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        const axios = require('axios');
+        const localStorage = window.localStorage;
+
+        const token = localStorage.getItem('token');
+        const tBody = document.getElementById('cont');
+        
+        //Gets a list of all registered users when the page is loaded
+        axios.get(localStorage.getItem('serverURL') + '/extensions/', {headers: {
+                'Authorization': `Bearer ${token}`
+            }})
+        .then((res) => {
+            //Adds each item to tbody
+            res.data.map((item) => {
+                if(item === null) {
+                    alert('Could not find any installed extension.')
+                }
+                const tr = document.createElement('tr');
+                //One column per attribute (except _v)
+                const tdCommand = document.createElement('td');
+                const tdID = document.createElement('td');
+                const tdName = document.createElement('td');
+                const tdParam = document.createElement('td');
+                const tdOption = document.createElement('td');
+
+                const textCommand = document.createTextNode(item.commandWord);
+                const textID = document.createTextNode(item._id);
+                const textName = document.createTextNode(item.fileName);
+                const textParam = document.createTextNode(item.parameters);
+                const textOptions = document.createTextNode(item.options)
+                
+                tdCommand.appendChild(textCommand);
+                tdID.appendChild(textID);
+                tdName.appendChild(textName);
+                tdParam.appendChild(textParam);
+                tdOption.appendChild(textOptions);
+
+                tr.appendChild(tdID);
+                tr.appendChild(tdName);
+                tr.appendChild(tdCommand);
+                tr.appendChild(tdParam);
+                tr.appendChild(tdOption);
+
+                tBody.appendChild(tr);
+            });
+        })
+        .catch((err) => alert(err))
+    </script>
+</body>
+</html>

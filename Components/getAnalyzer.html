@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Analyzer Management</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper red">
+          <div class="col s12">
+            <a href="./menu.html" class="breadcrumb">Main Screen</a>
+            <a href="#!" class="breadcrumb">Analyzer Management</a>
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <div class="card red center">
+                    <div class="card-content white-text">
+                        <p>Analyzer's ID: <span id="id"></span></p>
+                    </div>
+                    <div class="card-action">
+                        <button type="button" id="send" class="waves-effect waves-light btn red">Remove the analyzer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        const axios = require('axios');
+        const localStorage = window.localStorage;
+        const send = document.getElementById('send');
+
+        send.addEventListener('click', submissionHandler);
+
+        const token = localStorage.getItem('token');
+        let id;
+        
+        //Gets a list of all registered users when the page is loaded
+        axios.get(localStorage.getItem('serverURL') + '/admin/analyzer/', {headers: {
+                    'Authorization': `Bearer ${token}`
+                }})
+        .then((res) => {
+            console.log(res)
+            res.data.map((result) => {
+                if (result === null) {
+                    alert('No Analyzer registered. Please register an Analyzer.')
+                }
+                id = result._id;
+                document.getElementById('id').innerText = id;
+            })
+        })
+        .catch((err) => alert(err))
+
+        function submissionHandler(e) {
+            e.preventDefault();
+            axios.delete(localStorage.getItem('serverURL') + '/admin/analyzer/' + id, {headers: {
+                    'Authorization': `Bearer ${token}`
+                }})
+            .then((res) => {
+                alert('Analyzer succesfully removed');
+                window.location.replace('menu.html');
+            })
+            .catch((err) => alert(err))
+        }
+    </script>
+</body>
+</html>

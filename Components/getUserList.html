@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User List</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper red">
+          <div class="col s12">
+            <a href="./menu.html" class="breadcrumb">Main Screen</a>
+            <a href="#!" class="breadcrumb">User List</a>
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="table">
+                <table class="stripped centered">
+                    <thead>
+                        <tr>
+                            <th>Owner</th>
+                            <th>ID</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cont">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        const axios = require('axios');
+        const localStorage = window.localStorage;
+
+        const token = localStorage.getItem('token');
+        const tBody = document.getElementById('cont');
+        
+        //Gets a list of all registered users when the page is loaded
+        axios.get(localStorage.getItem('serverURL') + '/admin/userList/', {headers: {
+                    'Authorization': `Bearer ${token}`
+                }})
+        .then((res) => {
+            console.log(res.data);
+            //Adds each item to tbody
+            res.data.map((item) => {
+                if(item === null) {
+                    alert('Could not find any registered user.')
+                }
+                const tr = document.createElement('tr');
+                //One column per attribute (except _v)
+                const tdOwner = document.createElement('td');
+                const tdID = document.createElement('td');
+                const tdName = document.createElement('td');
+
+                const textOwner = document.createTextNode(item.owner);
+                const textID = document.createTextNode(item._id);
+                const textName = document.createTextNode(item.username);
+
+                tdOwner.appendChild(textOwner);
+                tdID.appendChild(textID);
+                tdName.appendChild(textName);
+
+                tr.appendChild(tdOwner);
+                tr.appendChild(tdID);
+                tr.appendChild(tdName);
+                
+                tBody.appendChild(tr);
+            });
+        })
+        .catch((err) => alert(err))
+    </script>
+</body>
+</html>

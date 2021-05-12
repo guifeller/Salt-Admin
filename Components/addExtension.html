@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add Extension</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper red">
+          <div class="col s12">
+            <a href="./menu.html" class="breadcrumb">Main Screen</a>
+            <a href="#!" class="breadcrumb">Add Extension</a>
+          </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <form id="form" class="">
+                <div class="row file-field input-field ">
+                    <label style="visibility: hidden">Please select the extension's main.json file.</label>
+                    <div class="btn waves-effect waves-light btn red">
+                        <span>Extension's main.json</span>
+                        <input type="file" id="file">  
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" id="filepath">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <div class="center-align">
+                <button type="submit" form="form" id="subm" class="waves-effect waves-light btn red"><i class="material-icons center red">add</i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        
+        const axios = require('axios');
+        const fs = require('fs');
+
+        const localStorage = window.localStorage;
+        const token = localStorage.getItem('token');
+        
+        const form = document.getElementById('form');
+        const button = document.getElementById('subm');
+        
+        button.addEventListener('click', submissionHandler);
+        form.addEventListener('submit', submissionHandler);
+        
+        function submissionHandler(e) {
+            e.preventDefault();
+            const path = document.getElementById('file').files[0].path;
+            const data = require(path);
+            //const json = JSON.parse(data);
+            axios.post(localStorage.getItem('serverURL') + '/extensions',
+                data,
+                {headers: {
+                    'Authorization': `Bearer ${token}`
+                }})
+            .then((res) => {
+                alert('File sent to the server.');
+                window.location.replace('menu.html');
+            })
+            .catch((err) => alert(err))
+        }
+    </script>
+</body>
+</html>

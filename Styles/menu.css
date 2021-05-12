@@ -1,0 +1,14 @@
+p {
+    font-size: 20px;
+    font-family: Roboto
+}
+
+.card-content {
+    height: 125px;
+    overflow: hidden;
+}
+
+.card-action{
+    height:80px;
+    overflow: hidden;
+}

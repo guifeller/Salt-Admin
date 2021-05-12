@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper red">
+          <a href="#!" class="brand-logo">Login</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <form id="form" class="col s12">
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input type="text" id="username" autofocus>
+                        <label for="username">Username: </label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input type="password" id="password">
+                        <label for="password">Password: </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input type="text" id="serverURL">
+                        <label for="serverURL">Server adress: </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <button type="submit" form="form" class="waves-effect waves-light btn red" id="subm">Send</button>
+        </div>
+        <div class="row">
+            <a href="registerOwner.html">Cick here to create a new owner account.</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        const electron = require('electron');
+        const axios = require('axios');
+        const localStorage = window.localStorage;
+
+        const form = document.getElementById('form');
+        const button = document.getElementById('subm');
+
+        button.addEventListener('click', submissionHandler);
+        form.addEventListener('submit', submissionHandler);
+
+        function submissionHandler(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const serverURL = document.getElementById('serverURL').value;
+            axios.post(serverURL + '/admin/login', {username: username, password:password})
+            .then((res) => {
+                const token = res.data.token;
+                return token;           
+            })
+            .then((tok) => {
+                localStorage.setItem('username', username);
+                localStorage.setItem('token', tok);
+                localStorage.setItem('serverURL', serverURL);
+                axios.defaults.headers.common['Authorization'] = tok;
+                window.location.replace('menu.html');
+            })
+            .catch((err) => {
+                alert(err);
+                window.location.reload();
+            })
+        };
+    </script>
+    
+
+    
+</body>
+</html>
